@@ -10,6 +10,12 @@ router.post('/signup', async (req, res) => {
   try {
     const data = req.body
 
+    // Check if an admin already exists
+    const existingAdmin = await User.findOne({ role: 'admin' });
+
+    if (data.role === 'admin' && existingAdmin){
+      return res.status(400).json({ error: 'Admin user already exists' })      
+    }
     // create a new user document using the mongoose model
     const newUser = new User(data);
 
@@ -30,14 +36,6 @@ router.post('/signup', async (req, res) => {
     console.log(error);
     res.status(500).json({ error: "internal server error" })
   }
-
-  // newPerson.name = data.name
-  // newPerson.age = data.age
-  // newPerson.work = data.work
-  // newPerson.mobile = data.mobile
-  // newPerson.email = data.email
-  // newPerson.address = data.address
-  // newPerson.salary = data.salary
 })
 
 // Login Route
